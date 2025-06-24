@@ -79,7 +79,7 @@ A Laravel + Inertia.js + Vue.js checkout application.
 - **Browse products** on the dashboard.
 - **Add products to your cart.**
 - **Update quantities or remove items** from your cart.
-- **Proceed to checkout** from the cart page.
+- **Checkout Order** from the cart page.
 - **View your orders** on the orders page.
 - **Cancel an order** (if not shipped) from the orders page.
 

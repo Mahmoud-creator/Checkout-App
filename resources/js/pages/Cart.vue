@@ -258,7 +258,7 @@ function removeItem(itemId: number) {
                                     size="lg"
                                 >
                                     <CreditCard class="h-5 w-5" />
-                                    Proceed to Checkout
+                                    Checkout Order
                                 </Button>
 
                                 <!-- Continue Shopping -->
