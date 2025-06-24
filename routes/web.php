@@ -10,7 +10,10 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', [ProductController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/{item}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
 
 
 require __DIR__.'/settings.php';
