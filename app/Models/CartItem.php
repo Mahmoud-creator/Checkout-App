@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    //
+
+    protected static $unguarded = true;
 }

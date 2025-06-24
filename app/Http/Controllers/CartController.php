@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CartController extends Controller
 {
-    /**
-     * Add a product to the cart.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function add(Request $request)
     {
         $request->validate([
@@ -45,10 +41,20 @@ class CartController extends Controller
         }
 
         if ($product && $product->stock < 0) {
-            return response()->json(['error' => 'Insufficient stock for this product.'], 400);
+            $product->stock += $request->quantity;
+            $product->save();
+            if ($cartItem) {
+                $cartItem->delete();
+            }
+
+            return back()->with('flash', [
+                'error' => 'Insufficient stock for the product: ' . $product->name
+            ]);
         }
 
-        return response()->json(['message' => 'Product added to cart successfully!']);
+        return back()->with('flash', [
+            'success' => 'Product added to cart successfully!'
+        ]);
     }
 
 }

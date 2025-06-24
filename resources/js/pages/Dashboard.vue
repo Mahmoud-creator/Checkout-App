@@ -3,6 +3,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { formatDate } from '@/lib/utils';
+import { usePage } from '@inertiajs/vue3'
+import Swal from 'sweetalert2'
 
 import { defineProps, onMounted } from 'vue';
 
@@ -23,7 +25,7 @@ const props = defineProps({
     },
 })
 
-
+const page = usePage()
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -38,11 +40,25 @@ const addToCart = (productId: number) => {
         quantity: 1
     }, {
         preserveScroll: true,
-        onSuccess: () => {
-            console.log('Product added to cart!');
+        onSuccess: (page) => {
+            const msg = page.props.flash?.success || 'Product added to cart!';
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: msg,
+                timer: 2000,
+                showConfirmButton: false,
+            });
         },
-        onError: (error) => {
-            console.error('Failed to add product to cart:', error);
+        onError: (errors) => {
+            const msg = page.props.flash?.error || 'Failed to add product to cart.';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: msg,
+                timer: 2500,
+                showConfirmButton: false,
+            });
         }
     })
 }
@@ -50,7 +66,7 @@ const addToCart = (productId: number) => {
 
 
 onMounted(() => {
-    console.log('Dashboard mounted with products:', props.products);
+    console.log('Dashboard mounted', props);
 });
 </script>
 <template>
