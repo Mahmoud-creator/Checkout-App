@@ -123,24 +123,23 @@ function removeItem(itemId: number) {
 
             <div class="grid lg:grid-cols-3 gap-8">
                 <!-- Cart Items Section -->
-                <div class="lg:col-span-2">
-                    <Card v-if="items.length === 0" class="border-dashed">
-                        <CardContent class="flex flex-col items-center justify-center py-16">
-                            <div class="p-4 bg-muted rounded-full mb-4">
-                                <Package class="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Your cart is empty</h3>
-                            <p class="text-muted-foreground text-center mb-6">
-                                Start adding some products to your cart and they will appear here.
-                            </p>
-                            <Button @click="router.visit('dashboard')" class="gap-2">
-                                <ShoppingCart class="h-4 w-4" />
-                                Continue Shopping
-                            </Button>
-                        </CardContent>
-                    </Card>
-
-                    <Card v-else>
+                <Card v-if="items.length === 0" class="border-dashed w-full lg:col-span-3">
+                    <CardContent class="flex flex-col items-center justify-center py-16">
+                        <div class="p-4 bg-muted rounded-full mb-4">
+                            <Package class="h-12 w-12 text-muted-foreground" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Your cart is empty</h3>
+                        <p class="text-muted-foreground text-center mb-6">
+                            Start adding some products to your cart and they will appear here.
+                        </p>
+                        <Button @click="router.visit('dashboard')" class="gap-2">
+                            <ShoppingCart class="h-4 w-4" />
+                            Continue Shopping
+                        </Button>
+                    </CardContent>
+                </Card>
+                <div v-else class="lg:col-span-2">
+                    <Card >
                         <CardHeader>
                             <CardTitle class="flex items-center gap-2">
                                 <Package class="h-5 w-5" />

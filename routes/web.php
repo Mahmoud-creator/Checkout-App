@@ -17,6 +17,7 @@ Route::patch('/cart/{item}', [CartController::class, 'updateQuantity'])->name('c
 Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
 Route::post('/checkout', [OrderController::class, 'checkout'])->middleware(['auth'])->name('checkout');
 Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth'])->name('orders.index');
+Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->middleware(['auth'])->name('orders.cancel');
 
 
 require __DIR__.'/settings.php';

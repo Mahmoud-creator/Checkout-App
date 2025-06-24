@@ -7,6 +7,9 @@ import { usePage } from '@inertiajs/vue3';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Package, CreditCard, ListOrdered } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
+import Swal from 'sweetalert2';
+import { router } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,6 +20,45 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const page = usePage();
 const orders = computed(() => page.props.orders || []);
+
+function cancelOrder(orderId: number) {
+    Swal.fire({
+        title: 'Cancel Order?',
+        text: 'Are you sure you want to cancel this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, cancel it',
+        cancelButtonText: 'No',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.post(`/orders/${orderId}/cancel`, {}, {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    const msg = page.props.flash?.success || 'Order cancelled.';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cancelled',
+                        text: msg,
+                        timer: 1200,
+                        showConfirmButton: false,
+                    });
+                },
+                onError: (errors) => {
+                    const msg = errors?.error || 'Failed to cancel order.';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: msg,
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                },
+            });
+        }
+    });
+}
 </script>
 <template>
     <Head title="Orders" />
@@ -89,8 +131,23 @@ const orders = computed(() => page.props.orders || []);
                             </table>
                         </div>
                         <Separator class="my-4" />
-                        <div class="flex justify-end">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <span class="text-lg font-semibold">Total: ${{ order.total_amount.toFixed(2) }}</span>
+                            <div v-if="order.status !== 'shipped' && order.status !== 'cancelled'">
+                                <Button
+                                    variant="destructive"
+                                    @click="cancelOrder(order.id)"
+                                    class="gap-2"
+                                >
+                                    Cancel Order
+                                </Button>
+                            </div>
+                            <div v-else-if="order.status === 'cancelled'">
+                                <span class="text-destructive font-semibold">Cancelled</span>
+                            </div>
+                            <div v-else-if="order.status === 'shipped'">
+                                <span class="text-green-600 font-semibold">Shipped</span>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

@@ -80,4 +80,38 @@ class OrderController extends Controller
             ]);
         }
     }
+
+    public function cancel(Request $request, $orderId)
+    {
+        $user = $request->user();
+        $order = Order::where('id', $orderId)->where('user_id', $user->id)->first();
+
+        if (!$order) {
+            return redirect()->route('orders.index')->with('flash', [
+                'error' => 'Order not found.'
+            ]);
+        }
+
+        if ($order->status === 'shipped') {
+            return redirect()->route('orders.index')->with('flash', [
+                'error' => 'Order has already been shipped and cannot be cancelled.'
+            ]);
+        }
+
+        DB::transaction(function () use ($order) {
+            // Restore stock for each item
+            foreach ($order->orderItems as $item) {
+                if ($item->product) {
+                    $item->product->stock += $item->quantity;
+                    $item->product->save();
+                }
+            }
+            $order->status = 'cancelled';
+            $order->save();
+        });
+
+        return redirect()->route('orders.index')->with('flash', [
+            'success' => 'Order cancelled successfully.'
+        ]);
+    }
 }
